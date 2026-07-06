@@ -1,0 +1,256 @@
+import { useState } from 'react';
+import { motion, AnimatePresence } from 'motion/react';
+import { SALON_SERVICES } from '../data';
+import { Service, ServiceCategory } from '../types';
+import { Sparkles, Calendar, Heart, ShieldCheck, Clock, X, Check } from 'lucide-react';
+
+interface ServicesProps {
+  onSelectService: (serviceName: string, serviceId: string) => void;
+}
+
+export default function Services({ onSelectService }: ServicesProps) {
+  const [selectedCategory, setSelectedCategory] = useState<ServiceCategory | 'All'>('All');
+  const [selectedService, setSelectedService] = useState<Service | null>(null);
+
+  const categories: (ServiceCategory | 'All')[] = ['All', 'Makeup', 'Hair', 'Nails', 'Skincare', 'Mehndi & Spa'];
+
+  const filteredServices = selectedCategory === 'All'
+    ? SALON_SERVICES
+    : SALON_SERVICES.filter((s) => s.category === selectedCategory);
+
+  const handleBookNow = (service: Service) => {
+    onSelectService(service.name, service.id);
+    const element = document.querySelector('#booking');
+    if (element) {
+      element.scrollIntoView({ behavior: 'smooth' });
+    }
+  };
+
+  const handleOpenModal = (service: Service) => {
+    setSelectedService(service);
+  };
+
+  const handleCloseModal = () => {
+    setSelectedService(null);
+  };
+
+  return (
+    <section id="services" className="py-24 bg-zinc-50 dark:bg-zinc-950/40 relative">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        
+        {/* Section Header */}
+        <div className="text-center max-w-3xl mx-auto mb-16 space-y-4">
+          <span className="text-xs uppercase tracking-[0.25em] text-gold-500 dark:text-gold-400 font-sans font-semibold flex items-center justify-center gap-2">
+            <Sparkles className="w-3.5 h-3.5" />
+            <span>Exquisite Menu of Luxury Treatments</span>
+          </span>
+          <h2 className="text-3xl sm:text-4xl md:text-5xl font-serif font-bold tracking-tight text-zinc-900 dark:text-white">
+            Our Elite Services
+          </h2>
+          <div className="w-16 h-[2px] bg-gold-400 mx-auto" />
+          <p className="text-zinc-500 dark:text-zinc-400 font-sans font-light text-sm sm:text-base">
+            Pamper yourself with our hand-crafted, high-end makeup designs, organic facials, elite hairstyling, and traditional art.
+          </p>
+        </div>
+
+        {/* Categories Tab Bar */}
+        <div className="flex flex-wrap justify-center gap-2 mb-12">
+          {categories.map((category) => (
+            <button
+              key={category}
+              onClick={() => setSelectedCategory(category)}
+              className={`px-5 py-2.5 rounded-full text-xs font-sans uppercase tracking-widest font-semibold transition-all duration-300 cursor-pointer ${
+                selectedCategory === category
+                  ? 'bg-gold-500 text-white shadow-md shadow-gold-500/10'
+                  : 'bg-white dark:bg-zinc-900 hover:bg-gold-50 dark:hover:bg-zinc-800 text-zinc-600 dark:text-zinc-300 border border-zinc-200/50 dark:border-zinc-800'
+              }`}
+            >
+              {category}
+            </button>
+          ))}
+        </div>
+
+        {/* Services Grid */}
+        <motion.div
+          layout
+          className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8"
+        >
+          <AnimatePresence mode="popLayout">
+            {filteredServices.map((service) => (
+              <motion.div
+                layout
+                key={service.id}
+                initial={{ opacity: 0, scale: 0.95 }}
+                animate={{ opacity: 1, scale: 1 }}
+                exit={{ opacity: 0, scale: 0.95 }}
+                transition={{ duration: 0.4 }}
+                className="bg-white dark:bg-zinc-900 rounded-3xl overflow-hidden border border-zinc-100 dark:border-zinc-900 hover:border-gold-200 dark:hover:border-gold-950/50 shadow-sm hover:shadow-xl transition-all duration-300 group flex flex-col justify-between"
+              >
+                {/* Image & Price Tag */}
+                <div className="relative h-60 overflow-hidden">
+                  <img
+                    src={service.imageUrl}
+                    alt={service.name}
+                    className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
+                    referrerPolicy="no-referrer"
+                  />
+                  <div className="absolute top-4 right-4 bg-zinc-950/80 backdrop-blur-md text-gold-300 font-mono text-sm font-semibold px-4 py-1.5 rounded-xl border border-white/10">
+                    Rs. {service.startingPrice.toLocaleString()}
+                  </div>
+                  <div className="absolute bottom-4 left-4 bg-white/90 dark:bg-zinc-900/95 backdrop-blur-sm text-zinc-900 dark:text-gold-200 text-[10px] uppercase font-sans tracking-widest font-bold px-3 py-1 rounded-lg">
+                    {service.category}
+                  </div>
+                </div>
+
+                {/* Card Content */}
+                <div className="p-6 flex-1 flex flex-col justify-between space-y-6">
+                  <div className="space-y-3">
+                    <div className="flex justify-between items-start gap-4">
+                      <h3 className="text-xl font-serif font-bold text-zinc-800 dark:text-white group-hover:text-gold-600 dark:group-hover:text-gold-400 transition-colors duration-300">
+                        {service.name}
+                      </h3>
+                      <div className="flex items-center text-zinc-400 dark:text-zinc-500 gap-1 text-[11px] font-sans shrink-0">
+                        <Clock className="w-3.5 h-3.5" />
+                        <span>{service.duration}</span>
+                      </div>
+                    </div>
+                    <p className="text-zinc-500 dark:text-zinc-400 font-sans text-xs sm:text-sm font-light leading-relaxed line-clamp-2">
+                      {service.description}
+                    </p>
+                  </div>
+
+                  {/* Micro list of features */}
+                  <div className="border-t border-zinc-100 dark:border-zinc-800 pt-4 flex flex-col space-y-2">
+                    {service.features.slice(0, 2).map((feat, i) => (
+                      <div key={i} className="flex items-center gap-2 text-zinc-500 dark:text-zinc-400 text-xs font-sans">
+                        <Check className="w-3.5 h-3.5 text-gold-500 shrink-0" />
+                        <span className="truncate">{feat}</span>
+                      </div>
+                    ))}
+                  </div>
+
+                  {/* Interactive CTAs */}
+                  <div className="grid grid-cols-2 gap-3 pt-2">
+                    <button
+                      id={`srv-details-${service.id}`}
+                      onClick={() => handleOpenModal(service)}
+                      className="py-2.5 rounded-full border border-zinc-200 dark:border-zinc-800 text-zinc-600 dark:text-zinc-400 text-xs font-sans uppercase font-medium tracking-wider hover:bg-neutral-100 dark:hover:bg-zinc-800 cursor-pointer text-center"
+                    >
+                      Details
+                    </button>
+                    <button
+                      id={`srv-book-${service.id}`}
+                      onClick={() => handleBookNow(service)}
+                      className="py-2.5 rounded-full bg-gold-500 hover:bg-gold-600 text-white text-xs font-sans uppercase font-semibold tracking-wider cursor-pointer text-center hover:shadow-lg transition-all"
+                    >
+                      Book Now
+                    </button>
+                  </div>
+                </div>
+              </motion.div>
+            ))}
+          </AnimatePresence>
+        </motion.div>
+      </div>
+
+      {/* Luxury Service Details Modal */}
+      <AnimatePresence>
+        {selectedService && (
+          <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
+            {/* Backdrop */}
+            <motion.div
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              exit={{ opacity: 0 }}
+              onClick={handleCloseModal}
+              className="absolute inset-0 bg-black/75 backdrop-blur-sm"
+            />
+
+            {/* Modal Box */}
+            <motion.div
+              initial={{ opacity: 0, scale: 0.9, y: 20 }}
+              animate={{ opacity: 1, scale: 1, y: 0 }}
+              exit={{ opacity: 0, scale: 0.9, y: 20 }}
+              transition={{ duration: 0.4 }}
+              className="relative bg-white dark:bg-zinc-950 border border-gold-200/30 dark:border-zinc-800 w-full max-w-2xl rounded-3xl overflow-hidden shadow-2xl z-10"
+            >
+              {/* Close Button */}
+              <button
+                id="modal-close-btn"
+                onClick={handleCloseModal}
+                className="absolute top-4 right-4 bg-black/60 hover:bg-black/80 text-white rounded-full p-2 z-20 cursor-pointer"
+              >
+                <X className="w-5 h-5" />
+              </button>
+
+              <div className="grid grid-cols-1 md:grid-cols-2 font-sans">
+                {/* Visual */}
+                <div className="relative h-64 md:h-full min-h-[250px] bg-zinc-900">
+                  <img
+                    src={selectedService.imageUrl}
+                    alt={selectedService.name}
+                    className="w-full h-full object-cover"
+                    referrerPolicy="no-referrer"
+                  />
+                  <div className="absolute inset-0 bg-gradient-to-t from-black/80 to-transparent" />
+                  <div className="absolute bottom-6 left-6 text-white space-y-1">
+                    <span className="text-[10px] uppercase font-sans tracking-widest bg-gold-500 px-2.5 py-1 rounded-md text-zinc-950 font-bold">
+                      {selectedService.category}
+                    </span>
+                    <h4 className="text-2xl font-serif font-bold mt-1 text-gold-100">{selectedService.name}</h4>
+                  </div>
+                </div>
+
+                {/* Body Details */}
+                <div className="p-8 space-y-6 flex flex-col justify-between">
+                  <div className="space-y-4">
+                    <div className="flex justify-between items-center pb-3 border-b border-zinc-100 dark:border-zinc-900">
+                      <div>
+                        <p className="text-[10px] uppercase text-zinc-400 tracking-wider">Starting Price</p>
+                        <p className="text-xl font-serif font-bold text-gold-500 dark:text-gold-400">Rs. {selectedService.startingPrice.toLocaleString()}</p>
+                      </div>
+                      <div className="text-right">
+                        <p className="text-[10px] uppercase text-zinc-400 tracking-wider">Duration</p>
+                        <p className="text-sm font-sans font-semibold text-zinc-800 dark:text-zinc-200">{selectedService.duration}</p>
+                      </div>
+                    </div>
+
+                    <div className="space-y-2">
+                      <p className="text-xs uppercase text-zinc-400 tracking-wider font-bold">Treatment Highlight</p>
+                      <p className="text-zinc-600 dark:text-zinc-300 font-sans text-xs leading-relaxed font-light">
+                        {selectedService.description}
+                      </p>
+                    </div>
+
+                    <div className="space-y-2">
+                      <p className="text-xs uppercase text-zinc-400 tracking-wider font-bold">What is Included</p>
+                      <ul className="grid grid-cols-1 gap-1.5 animate-fade-in">
+                        {selectedService.features.map((feat, idx) => (
+                          <li key={idx} className="flex items-center gap-2 text-zinc-500 dark:text-zinc-400 text-xs font-sans">
+                            <Heart className="w-3.5 h-3.5 text-gold-500 shrink-0" />
+                            <span>{feat}</span>
+                          </li>
+                        ))}
+                      </ul>
+                    </div>
+                  </div>
+
+                  <button
+                    id="modal-book-btn"
+                    onClick={() => {
+                      handleBookNow(selectedService);
+                      handleCloseModal();
+                    }}
+                    className="w-full py-3 bg-gold-500 hover:bg-gold-600 text-white font-sans text-xs uppercase font-semibold tracking-widest rounded-xl transition-all duration-300 shadow-md shadow-gold-500/10 cursor-pointer"
+                  >
+                    Proceed with Reservation
+                  </button>
+                </div>
+              </div>
+            </motion.div>
+          </div>
+        )}
+      </AnimatePresence>
+    </section>
+  );
+}

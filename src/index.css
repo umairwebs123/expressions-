@@ -1,0 +1,88 @@
+@import url('https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;0,600;0,700;1,400&family=Montserrat:wght@300;400;500;600;700&family=Playfair+Display:ital,wght@0,400;0,500;0,600;1,400&family=Inter:wght@300;400;500;600&display=swap');
+@import "tailwindcss";
+
+@theme {
+  --font-serif: "Cormorant Garamond", "Playfair Display", serif;
+  --font-sans: "Montserrat", "Inter", sans-serif;
+  --font-display: "Playfair Display", serif;
+  
+  --color-gold-50: #fcf9f2;
+  --color-gold-100: #f7eed9;
+  --color-gold-200: #edd6a6;
+  --color-gold-300: #e0b870;
+  --color-gold-400: #cca052;
+  --color-gold-500: #b88a3d;
+  --color-gold-600: #99702e;
+  --color-gold-700: #7a5822;
+  --color-gold-800: #5c4117;
+  --color-gold-900: #3d2a0e;
+  
+  --color-nude-50: #fbf9f8;
+  --color-nude-100: #f6efe9;
+  --color-nude-200: #ede0d4;
+  --color-nude-300: #e0c3b2;
+  --color-nude-400: #cca086;
+  --color-nude-500: #b07d62;
+  
+  --color-blush-50: #fffcfc;
+  --color-blush-100: #fef0f2;
+  --color-blush-200: #fcdfe3;
+  --color-blush-300: #fabfc8;
+  --color-blush-400: #f596a6;
+  --color-blush-500: #eb6b84;
+}
+
+@layer base {
+  body {
+    font-family: var(--font-sans);
+    scroll-behavior: smooth;
+    @apply antialiased transition-colors duration-300;
+  }
+  
+  h1, h2, h3, h4, h5, h6 {
+    font-family: var(--font-serif);
+    letter-spacing: 0.02em;
+  }
+}
+
+/* Custom scrollbar to keep it luxury */
+::-webkit-scrollbar {
+  width: 8px;
+}
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+::-webkit-scrollbar-thumb {
+  background: var(--color-gold-200);
+  border-radius: 4px;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: var(--color-gold-400);
+}
+
+.glass-panel {
+  background: rgba(255, 255, 255, 0.7);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+}
+
+.glass-panel-dark {
+  background: rgba(18, 18, 18, 0.8);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+}
+
+.luxury-gradient {
+  background: linear-gradient(135deg, #121212 0%, #1e1e1e 100%);
+}
+
+.luxury-light-gradient {
+  background: linear-gradient(135deg, #fbf9f8 0%, #f6efe9 100%);
+}
+
+.text-gold-gradient {
+  background: linear-gradient(135deg, #af8949 0%, #edd6a6 50%, #99702e 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+

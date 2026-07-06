@@ -1,0 +1,6 @@
+{
+  "name": "Expressions Beauty Bar",
+  "description": "Luxury premium beauty, hair, nails, and makeup salon in Farid Town, Sahiwal, Pakistan. Where beauty meets perfection.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}
